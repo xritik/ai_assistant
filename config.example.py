@@ -9,9 +9,9 @@ YOUR_NAME = "Ritik"               # ← change to your name
 # ── Assistant name (what you want to call it) ─────────────────────────────────
 ASSISTANT_NAME = "Jarvis"         # ← call it whatever you like
 
-# ── OpenAI API key ────────────────────────────────────────────────────────────
-# Get from: https://platform.openai.com/api-keys
-OPENAI_API_KEY = "sk-..."         # ← paste your key here
+# ── GROQ API key ────────────────────────────────────────────────────────────
+# Get from: https://console.groq.com/keys
+GROQ_API_KEY = "gsk-..."         # ← paste your key here
 
 # ── Porcupine wake-word key (FREE tier is fine) ───────────────────────────────
 # Get from: https://console.picovoice.ai/  → sign up → copy Access Key

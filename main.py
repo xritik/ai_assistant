@@ -17,11 +17,11 @@ from pathlib import Path
 
 import pyaudio
 import whisper
-from openai import OpenAI
+from groq import Groq
 import numpy as np
 
 from config import (
-    OPENAI_API_KEY,
+    GROQ_API_KEY,
     PORCUPINE_ACCESS_KEY,
     PIPER_MODEL_PATH,
     PIPER_EXECUTABLE,
@@ -31,7 +31,7 @@ from config import (
 )
 
 # ── Clients & Models (loaded once at startup) ─────────────────────────────────
-client = OpenAI(api_key=OPENAI_API_KEY)
+client = Groq(api_key=GROQ_API_KEY)
 
 print("⏳ Loading Whisper model... (first run downloads ~150MB, be patient)")
 whisper_model = whisper.load_model("base")
@@ -79,7 +79,7 @@ def ask_gpt(user_text: str) -> str:
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model="llama-3.3-70b-versatile",
             messages=messages,
             max_tokens=300,
             temperature=0.7,
