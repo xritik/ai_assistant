@@ -1,0 +1,7 @@
+# AI Personal Assistant — Phase 1 Dependencies
+# Install with:  pip install -r requirements.txt
+
+openai>=1.30.0
+openai-whisper>=20231117
+pyaudio>=0.2.14
+pvporcupine>=3.0.0       # wake word — needs free API key from picovoice.ai

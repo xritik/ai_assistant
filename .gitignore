@@ -1,0 +1,25 @@
+﻿# Python & venv
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Whisper cache
+.cache/
+
+# THIS IS THE IMPORTANT ONE - keeps your API keys off GitHub
+config.py
+
+# Memory - personal conversation history
+memory.json
+
+# Voice models - too large for github
+voices/
+
+# Piper binary
+piper/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
