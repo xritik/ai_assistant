@@ -192,7 +192,12 @@ def record_until_silence(
         wf.writeframes(b"".join(frames))
 
     print("🧠 Transcribing with Whisper...")
-    result = whisper_model.transcribe(tmp_path, language="en", fp16=False)
+    result = whisper_model.transcribe(
+        tmp_path,
+        language="en",
+        fp16=False,
+        initial_prompt="My name is Ritik. My assistant is Jessy. Friends names include Suraj, Anuj, Chaudhary, Yash, Pankaj. We speak clear Indian English.",
+    )
     os.unlink(tmp_path)
 
     text = result["text"].strip()
@@ -247,7 +252,7 @@ def run_wake_word_mode():
 
     # Load the hey jarvis wake word model
     oww_model = Model(
-        wakeword_models=["hey_jarvis"],
+        wakeword_models=["hey_jarvis_v0.1"],
         inference_framework="onnx"
     )
 
@@ -275,7 +280,7 @@ def run_wake_word_mode():
 
             # If confidence is above threshold → activate
             for model_name, score in prediction.items():
-                if score > 0.5:
+                if score > 0.3:
                     print(f"\n🔔 Wake word detected! (score: {score:.2f})")
                     # Clear the buffer
                     oww_model.reset()

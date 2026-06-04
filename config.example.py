@@ -7,7 +7,7 @@
 YOUR_NAME = "Ritik"               # ← change to your name
 
 # ── Assistant name (what you want to call it) ─────────────────────────────────
-ASSISTANT_NAME = "Jarvis"         # ← call it whatever you like
+ASSISTANT_NAME = "Jessy"         # ← call it whatever you like
 
 # ── GROQ API key ────────────────────────────────────────────────────────────
 # Get from: https://console.groq.com/keys
