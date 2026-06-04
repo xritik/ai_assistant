@@ -51,7 +51,7 @@ def save_memory(history: list):
 
 conversation_history: list = load_memory()
 
-# ── GPT-4o system prompt ──────────────────────────────────────────────────────
+# ── GROQ-llama system prompt ──────────────────────────────────────────────────────
 SYSTEM_PROMPT = f"""
 You are {ASSISTANT_NAME}, a personal AI assistant for {YOUR_NAME}.
 You live on their laptop and are always available to help.
@@ -63,9 +63,10 @@ Personality:
 - No markdown. No bullet points. No asterisks. Plain spoken English only.
 - Current date and time is injected into each user message automatically.
 - Always call the user {YOUR_NAME}.
+- You are a VOICE assistant. MAXIMUM 3 sentences per response unless user specifically asks for a list or long answer.
 """
 
-# ── Ask GPT-4o ────────────────────────────────────────────────────────────────
+# ── Ask GROQ-llama ────────────────────────────────────────────────────────────────
 def ask_gpt(user_text: str) -> str:
     global conversation_history
 
@@ -94,40 +95,38 @@ def ask_gpt(user_text: str) -> str:
 
 # ── Piper TTS ─────────────────────────────────────────────────────────────────
 def speak(text: str):
-    """Speak text aloud using Piper (offline, free, fast)."""
-    print(f"\n🤖 {ASSISTANT_NAME}: {text}\n")
-
+    print(f"\n🤖 Jessy: {text}\n")
     try:
-        result = subprocess.run(
-            [PIPER_EXECUTABLE, "--model", PIPER_MODEL_PATH, "--output_raw"],
-            input=text.encode("utf-8"),
-            capture_output=True,
-            timeout=15,
-        )
+        # Split long text into sentences for faster first-word output
+        sentences = text.replace('!', '.').replace('?', '.').split('.')
+        sentences = [s.strip() for s in sentences if s.strip()]
 
-        raw_audio = result.stdout
-
-        if not raw_audio:
-            print("⚠️  Piper returned no audio.")
-            print(f"   stderr: {result.stderr.decode()}")
-            return
-
-        # Play the raw 16-bit PCM audio
         pa = pyaudio.PyAudio()
         stream = pa.open(
             format=pyaudio.paInt16,
             channels=1,
-            rate=22050,      # Piper's default output sample rate
+            rate=22050,
             output=True,
         )
-        stream.write(raw_audio)
+
+        for sentence in sentences:
+            if not sentence:
+                continue
+            result = subprocess.run(
+                [PIPER_EXECUTABLE, "--model", PIPER_MODEL_PATH, "--output_raw"],
+                input=sentence.encode("utf-8"),
+                capture_output=True,
+                timeout=30,
+            )
+            if result.stdout:
+                stream.write(result.stdout)
+
         stream.stop_stream()
         stream.close()
         pa.terminate()
 
     except FileNotFoundError:
         print(f"⚠️  Piper not found at: {PIPER_EXECUTABLE}")
-        print("   Run setup.sh first, or update PIPER_EXECUTABLE in config.py")
     except subprocess.TimeoutExpired:
         print("⚠️  Piper timed out.")
     except Exception as e:
@@ -136,7 +135,7 @@ def speak(text: str):
 # ── Whisper STT (mic → text) ──────────────────────────────────────────────────
 def record_until_silence(
     silence_threshold: float = 500,   # RMS level below this = silence
-    silence_duration: float = 2.0,    # stop after 2s of silence
+    silence_duration: float = 1.5,    # stop after 2s of silence
     max_duration: float = 30.0,       # hard cap at 30s
     sample_rate: int = 16000,         # Whisper expects 16kHz
 ) -> str:
